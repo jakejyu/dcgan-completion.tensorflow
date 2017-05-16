@@ -24,6 +24,7 @@ parser.add_argument('--maskType', type=str,
                     choices=['random', 'center', 'left', 'full'],
                     default='center')
 parser.add_argument('imgs', type=str, nargs='+')
+parser.add_argument('--is_crop', type=bool, default=True)
 
 args = parser.parse_args()
 
@@ -33,5 +34,5 @@ config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 with tf.Session(config=config) as sess:
     dcgan = DCGAN(sess, image_size=args.imgSize,
-                  checkpoint_dir=args.checkpointDir, lam=args.lam)
+                  checkpoint_dir=args.checkpointDir, lam=args.lam, is_crop=True)
     dcgan.complete(args)
