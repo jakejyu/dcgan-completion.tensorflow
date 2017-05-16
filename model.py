@@ -19,7 +19,7 @@ class DCGAN(object):
                  batch_size=64, sample_size=64,
                  z_dim=100, gf_dim=64, df_dim=64,
                  gfc_dim=1024, dfc_dim=1024, c_dim=3,
-                 checkpoint_dir=None, lam=0.1):
+                 checkpoint_dir=None, lam=0.08):
         """
 
         Args:
