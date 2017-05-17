@@ -19,7 +19,7 @@ class DCGAN(object):
                  batch_size=64, sample_size=64,
                  z_dim=100, gf_dim=64, df_dim=64,
                  gfc_dim=1024, dfc_dim=1024, c_dim=3,
-                 checkpoint_dir=None, lam=0.1):
+                 checkpoint_dir=None, lam=0.2):
         """
 
         Args:
@@ -84,20 +84,28 @@ class DCGAN(object):
         self.d__sum = tf.summary.histogram("d_", self.D_)
         self.G_sum = tf.summary.image("G", self.G)
 
+        # DCGAN
         self.d_loss_real = tf.reduce_mean(
             tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits,
                                                     labels=tf.ones_like(self.D)))
         self.d_loss_fake = tf.reduce_mean(
             tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits_,
                                                     labels=tf.zeros_like(self.D_)))
-        self.g_loss = tf.reduce_mean(
-            tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits_,
+        #self.g_loss = tf.reduce_mean(
+        #    tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits_,
                                                     labels=tf.ones_like(self.D_)))
 
         self.d_loss_real_sum = tf.summary.scalar("d_loss_real", self.d_loss_real)
         self.d_loss_fake_sum = tf.summary.scalar("d_loss_fake", self.d_loss_fake)
 
-        self.d_loss = self.d_loss_real + self.d_loss_fake
+        #self.d_loss = self.d_loss_real + self.d_loss_fake
+
+       # LSGAN
+        self.d_loss = tf.reduce_mean(
+            tf.square(self.D_logits-1) + tf.square(D_logits_))/2
+        self.g_loss = tf.reduce_mean(
+            tf.square(self.D_logits_-1))/2
+
 
         self.g_loss_sum = tf.summary.scalar("g_loss", self.g_loss)
         self.d_loss_sum = tf.summary.scalar("d_loss", self.d_loss)
