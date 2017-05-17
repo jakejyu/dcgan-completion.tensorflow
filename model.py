@@ -257,7 +257,7 @@ Initializing a new one.
 
         batch_idxs = int(np.ceil(nImgs/self.batch_size))
         if config.maskType == 'random':
-            fraction_masked = 0.2
+            fraction_masked = 0.7#0.2
             mask = np.ones(self.image_shape)
             mask[np.random.random(self.image_shape[:2]) < fraction_masked] = 0.0
         elif config.maskType == 'center':
