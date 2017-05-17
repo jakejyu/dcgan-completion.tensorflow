@@ -19,7 +19,7 @@ class DCGAN(object):
                  batch_size=64, sample_size=64,
                  z_dim=100, gf_dim=64, df_dim=64,
                  gfc_dim=1024, dfc_dim=1024, c_dim=3,
-                 checkpoint_dir=None, lam=0.08):
+                 checkpoint_dir=None, lam=0.1):
         """
 
         Args:
@@ -113,10 +113,12 @@ class DCGAN(object):
         self.mask = tf.placeholder(tf.float32, [None] + self.image_shape, name='mask')
         self.contextual_loss = tf.reduce_sum(
             tf.contrib.layers.flatten(
-                tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images))), 1)
-        #        tf.divide(tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)), self.images)), 1)
-        self.perceptual_loss = self.g_loss
-        self.complete_loss = self.contextual_loss + self.lam*self.perceptual_loss
+                tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images))), 1) # 0
+        #        tf.divide(tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)), self.images)), 1) #1
+        self.perceptual_loss = self.g_loss # 0
+        # self.perceptual_loss = self.g_loss # 1
+        #self.complete_loss = self.contextual_loss + self.lam*self.perceptual_loss # 0
+        self.complete_loss = (1 - self.lam) * self.contextual_loss + self.lam*self.perceptual_loss # 1
         self.grad_complete_loss = tf.gradients(self.complete_loss, self.z)
 
     def train(self, config):
