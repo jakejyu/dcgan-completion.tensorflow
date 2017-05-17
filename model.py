@@ -19,7 +19,7 @@ class DCGAN(object):
                  batch_size=64, sample_size=64,
                  z_dim=100, gf_dim=64, df_dim=64,
                  gfc_dim=1024, dfc_dim=1024, c_dim=3,
-                 checkpoint_dir=None, lam=0.2):
+                 checkpoint_dir=None, lam=0.1):
         """
 
         Args:
@@ -91,20 +91,20 @@ class DCGAN(object):
         self.d_loss_fake = tf.reduce_mean(
             tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits_,
                                                     labels=tf.zeros_like(self.D_)))
-        #self.g_loss = tf.reduce_mean(
-        #    tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits_,
+        self.g_loss = tf.reduce_mean(
+            tf.nn.sigmoid_cross_entropy_with_logits(logits=self.D_logits_,
                                                     labels=tf.ones_like(self.D_)))
 
         self.d_loss_real_sum = tf.summary.scalar("d_loss_real", self.d_loss_real)
         self.d_loss_fake_sum = tf.summary.scalar("d_loss_fake", self.d_loss_fake)
 
-        #self.d_loss = self.d_loss_real + self.d_loss_fake
+        self.d_loss = self.d_loss_real + self.d_loss_fake
 
        # LSGAN
-        self.d_loss = tf.reduce_mean(
-            tf.square(self.D_logits-1) + tf.square(D_logits_))/2
-        self.g_loss = tf.reduce_mean(
-            tf.square(self.D_logits_-1))/2
+       # self.d_loss = tf.reduce_mean(
+       #     tf.square(self.D_logits-1) + tf.square(self.D_logits_))/2
+       # self.g_loss = tf.reduce_mean(
+       #     tf.square(self.D_logits_-1))/2
 
 
         self.g_loss_sum = tf.summary.scalar("g_loss", self.g_loss)
@@ -124,8 +124,8 @@ class DCGAN(object):
                 tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images))), 1) # 0
         #        tf.divide(tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)), self.images)), 1) #1
         self.perceptual_loss = self.g_loss # 0
-        # self.perceptual_loss = self.g_loss # 1
-        #self.complete_loss = self.contextual_loss + self.lam*self.perceptual_loss # 0
+        ## self.perceptual_loss = self.g_loss # 1
+        ##self.complete_loss = self.contextual_loss + self.lam*self.perceptual_loss # 0
         self.complete_loss = (1 - self.lam) * self.contextual_loss + self.lam*self.perceptual_loss # 1
         self.grad_complete_loss = tf.gradients(self.complete_loss, self.z)
 
