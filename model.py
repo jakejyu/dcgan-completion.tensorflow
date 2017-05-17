@@ -125,10 +125,13 @@ class DCGAN(object):
           for j in range (0, self.image_size):
             position_weights[i, j, :] = 1/math.sqrt((math.sqrt(math.sqrt((i-center)*(i-center) + (j-center)*(j-center)))))
 
+
+
         self.mask = tf.placeholder(tf.float32, [None] + self.image_shape, name='mask')
         self.contextual_loss = tf.reduce_sum(
             tf.contrib.layers.flatten(
-                tf.multiply(position_weights, tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)))), 1) # 0
+               tf.multiply(position_weights, tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)))), 1) # 0
+               #tf.multiply(position_weights, tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)))), 1) # 0
         #        tf.divide(tf.abs(tf.multiply(self.mask, self.G) - tf.multiply(self.mask, self.images)), self.images)), 1) #1
         self.perceptual_loss = self.g_loss # 0
         ## self.perceptual_loss = self.g_loss # 1
